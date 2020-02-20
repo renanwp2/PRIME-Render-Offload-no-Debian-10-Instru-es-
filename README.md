@@ -85,14 +85,19 @@ Fazendo login vamos instalar os drivers da nvidia e os pacotes necessários para
 
 sudo cat 'deb http://deb.debian.org/debian/ sid main' >> /etc/apt/sources.list && sudo apt-get update
 
-Remova o xserver e seu display manager antigo fazendo 
-
-
-##############################################################################################################################################################################
-
-INSTALANDO DEPENDENCIAS DO PRIME-RENDER OFFLOAD
+Faça  também
 
 sudo apt install -y --no-install-recommends --no-install-suggests xserver-common xserver-xephyr xserver-xorg xserver-xorg-core xserver-xorg-dev xserver-xorg-input-all xserver-xorg-legacy > xorg-install
+
+
+ATENÇÃO: NÂO FAÇAM O COMANDO SUDO APT-GET UPGRADE OU SUDO APT-GET DIST-UPGRADE ATÉ O FIM DO PROCESSO DE INSTALAÇÂO E REMOÇÃO DA LINHA "deb http://deb.debian.org/debian/ sid main" DO SEU
+SOURCES.LIST E A UTILIZAÇÂO DO BLEACHBIT. ISSO É ARRISCADO, SE VC NÂO SABE MANTER SEU COMPUTADOR. SOMENTE USUARIOS EXPERIENTES USAM O REPOSÍTÓRIO SID NO DIA A DIA, SE COMETEU ESSE ENGANO,
+USE O TIMESHIFT. =) 
+
+Avisos a parte. Leia o xorg-install e veja se tem algum pacote MUITO importante que não precisa ser removido. 
+Usualmente, quando MUITOS (a perder de vista) pacotes ficam desnecessários é pq uma determinada funcionalidade do sistema se perdeu. Isso é ruim e não é esperado aqui, mas se atente e 
+pesquise caso fique nervoso. =) Uma quantidade pequena de bibliotecas perdidas geralmente não significa nada além de um comportamento normal do update. Alias, isso acontece até mesmo com o comando
+sudo apt-get upgrade e esse comando, por si só, não representa riscos e somente beneficios. <3 
 
 ##############################################################################################################################################################################
 
@@ -133,34 +138,45 @@ sudo apt-get install xserver-xorg-video-intel.
 
 POR PRECAUÇÃO NÂO DEIXE O NOUVEAU INICIAR
 
-Antes de instalar os graficos da nVidia, não deixe seus módulo nouveau carregarer na inicialização (é possível isso acontecer se vc intalou o xserver-xorg-video-all):
+Antes de instalar os graficos da Nvidia, não deixe seus módulo nouveau carregarer na inicialização (é possível isso acontecer se vc intalou o xserver-xorg-video-all):
 
-sudo echo 'blacklist nouveau' >> /etc/modprobe.d/blacklist.conf
-
+sudo echo 'blacklist nouveau' >> /etc/modprobe.d/blacklist.conf. Os módulos (drivers) nouveau não funcionam em conjunto com os drivers da Nvidia. =) 
 
 Antes do processo de instalação da nvidia copie os arquivos xorg.conf em /etc/X11 e também os arquivos com final .conf (*.conf) para para sua pasta do usuario /home/<nome do seu usuario> fazendo:
 
-sudo cp /etc/X11/xorg.conf $$ cp -a /etc/X11/xorg.conf.d/ home/<nome do seu usuario>
+sudo cp /etc/X11/xorg.conf /home/<nome do seu usuario> $$ cp -a /etc/X11/xorg.conf.d/ home/<nome do seu usuario>
 
-Agora vamos instalar os drivers da nVidia fazendo:
+Agora vamos instalar os drivers da Nvidia fazendo:
 
-sudo bash ~/Downloads/NVIDIA-*.run
+sudo bash ~/Downloads/NVIDIA-*.run ou use o autocompletar para ser mais seguro. 
 
 No meu caso, 
 
 sudo bash ~/Downloads/NVIDIA-Linux-x86_64-440.58.01.run
 
-Vc deve dizer sim para tudo, exceto para a ultima opção que diz 'generate a new X configuration file' utilizando utulizando o nvdiia-xconfg, pois essa ultima pode fazer vc perder video numa proxima reinicialização do sistema.
+Vc deve dizer sim para tudo, exceto para a ultima opção que diz 'generate a new X configuration file' utilizando o nvidia-xconfig, pois essa ultima pode fazer vc perder video numa proxima 
+reinicialização do sistema com o servidor grafico ativado.
 
 ##############################################################################################################################################################################
 
 CONFERINDO A INSTALAÇÂO
 
-Se perdeeu o video for o caso, pq disse sim para tudo, não se preocupe, vc vai em opções avançadas de boot e utilize a opção recovery e faça:
+Se vc não deu sim na ultima opção de instalação drivers, parabéns, vc fez certo! 
 
-sudo rm /etc/X11/xorg.conf && mv xorg.conf.backup xorg.conf. 
+Se vc deu sim na ultima opção, não se preocupe, veja se vc tem um arquivo com nome .backup ou nvidia-xconfig no meio (comando ls lista arquivos). 
 
-Agora vc deve estar com video. Veja se dentro do xorg.conf.d tem arquivos. Para tanto, faça:
+Se tiver, faça 
+
+
+sudo cp /home/<nome do seu usuario>/xorg.conf /etc/X11/
+
+E tudo está correto e voltou ao normal. =) 
+
+Agora vc deve estar com video nas próximas reinicializações. 
+
+
+
+Veja se dentro do xorg.conf.d tem arquivos. Para tanto, faça:
 
 ls -Ah /etc/X11/xorg.conf.d
 
@@ -168,15 +184,19 @@ Se a pasta não existe ou a pasta está vazia, vc está bem. Se ela existe e tem
 
 sudo cat /etc/X11/xorg.conf.d/*.conf >> /etc/X11/xorg.conf.
 
-Agora vc terá video em todas as reinicializações, mas ainda não tem a capacidade de controle sobre os drivers de video. Agora faremos nossa configuração manual.
+Nesse ponto, vc pode remover essa pasta (vc fez o backup na sua home com o comando cp -a /etc/X11/xorg.conf.d/ home/<nome do seu usuario> ).
+
+Agora vc terá video em todas as reinicializações quando terminarmos o processo e o nvidia-xrun está pronto para funcionar, bastanto instalar.
 
 ##############################################################################################################################################################################
 
-COLOCANDO OS ARQUIVOS DO NVIDIA-RUN NO LUGAR APROPRIADO
+COLOCANDO OS ARQUIVOS DO NVIDIA-RUN NO LUGAR APROPRIADO (INSTALAÇÂO DO NVIDIA-XRUN)
 
 Vá na pasta Download e extraia os arquivos. É possível fazer isso por terminal fazendo:
 
-unzip nvidia-xrun-master.zip. Entre no novo diretório:
+unzip nvidia-xrun-master.zip
+
+Entre no novo diretório:
 
 cd nvidia-xrun-master e abra o terminal nesse diretório e copie os arquivos da poasta de acordo com essa estrutura (essa parte é chata):
 
@@ -197,19 +217,30 @@ chown root:root /usr/bin/nvidia-xrun && chmod +x /usr/bin/nvidia-xrun
 
 Se vc baixou os drivers pelo reporítório, vai precisar seguir o tutorial: 
 
-https://wiki.debian.org/NvidiaGraphicsDrivers/NvidiaXrun
+https://wiki.debian.org/NvidiaGraphicsDrivers/NvidiaXrun. 
+
+Caso tenha dificuldades, realmente sugiro ler a Wiki do Debian que é realmente muito didática. <3 
 
 ##############################################################################################################################################################################
 
-IMPEÇA QUE DRIVERS DA PLACA DE VIDEO DA NVIDIA CARREGEM NO BOOT PARA EVITAR DESCONFORTOS NO USO DO NVIDIA-XRUN:
+IMPEÇA QUE DRIVERS DA PLACA DE VIDEO DA NVIDIA CARREGEM NO BOOT PARA EVITAR DESCONFORTOS NO USO DO NVIDIA-XRUN
 
-Para evitar problemas com o nvidia-xrun vamos evitar que os drivers da Nvidia carreguem até termos video nas inicializações do sistema. Crie um arquivo chamado blacklist-nvidia.conf na pasta /etc/X11/modprobe.d
+Essa parte é feita para evitar que a sessão grafica iniciada com o nvidia-xrun não trave quando for deslogar dessa sessão e além disso garantir economia de bateria.
+
+Para evitar problemas com o nvidia-xrun vamos evitar que os drivers da Nvidia carreguem até termos video nas inicializações do sistema. 
+
+Crie um arquivo chamado blacklist-nvidia.conf na pasta /etc/X11/modprobe.d com as entradas 
+
+blacklist nvidia
+blacklist nvidia_drm 
+blacklist nvidia_modeset
+blacklist nvidia_uvm.
 
 Assim,
 
 cat /etc/modprobe.d/blacklist-nvidia.conf
 
-terá como saida :
+Devera ter como saida :
 
 blacklist nvidia
 blacklist nvidia_drm 
@@ -219,12 +250,12 @@ blacklist nvidia_uvm.
 ##############################################################################################################################################################################
 DESLIGANDO SUA PLACA DE VIDEO ATÉ QUE ATIVE O NVIDIA-XRUN NOVAMENTE:
 
-Agora inicie o serviço para ocultar sua placa de video do Kernel para ativar ultra economia de energia:
+Agora inicie o serviço para ocultar sua placa de video do Kernel para ativar "ultra" economia de energia:
 
 systemctl enable nvidia-xrun-pm.
 
 ##############################################################################################################################################################################
-CONFIGURANDO O NVIDIA-XRUN PARA PRIME RENDER OFFLOAD NO LUGAR DE REVERSE PRIME
+CONFIGURANDO O NVIDIA-XRUN PARA PRIME RENDER OFFLOAD NO LUGAR DO USUAL REVERSE PRIME
 
 Nesse momento temos reverse PRIME configurado. Vale a pena notar que reverse PRIME tem uma performance absurda com OpenGL! No entanto, devido ao Bug da nvidia com aplicações Vulkan 
 quando temos o PRIME synchronization ligado para aplicações Vulkan (https://wiki.archlinux.org/index.php/PRIME e https://devtalk.nvidia.com/default/topic/1044496/linux/hangs-freezes-when-vulkan-v-sync-vk_present_mode_fifo_khr-is-enabled/) vale a pena utilizar PRIME Render Offload nessas condições. Então a opção é utilizar o PRIME Render Offload para aplicações Vulkan comentando todas as linhas do arquivo /etc/X11/nvidia-xorg.conf e colocando no final do arquivo /etc/X11/nvidia-xorg.conf as seguintes opções: 
@@ -280,6 +311,7 @@ Providers: number : 2
 Provider 0: id: 0x43 cap: 0xf, Source Output, Sink Output, Source Offload, Sink Offload crtcs: 3 outputs: 1 associated providers: 0 name:modesetting
 Provider 1: id: 0x248 cap: 0x0 crtcs: 0 outputs: 0 associated providers: 0 name:NVIDIA-G0
 
+
 ##############################################################################################################################################################################
 
 LIMPANDO CACHE DE ARQUIVOS DO APT-GET e RETIRANDO O REPOSITÓRIO SID DO SOURCES.LIST
@@ -307,7 +339,7 @@ PRINCIPAIS PROBLEMAS PROBLEMAS QUE PODERIAM A VIR A ACONTECER:
 
 ######################################## 
 
-TELA PRETA APOS BOOT MESMO CHECANDO ARQUIVOS EM XORG.CONF e XORG.CONF.D
+TELA PRETA OU PISCANTE APOS BOOT MESMO CHECANDO ARQUIVOS EM XORG.CONF e XORG.CONF.D:
 
 Todo problema assim ter que ser resolvido via Recovey em opções avançadas de Boot do GRUB
 
@@ -324,15 +356,17 @@ e baixar seu display manager
 
 Talvez vc tenha que resintalar o xinit também, então:
 
-sudo apt-get install xinit
+sudo apt-get install xinit xterm
+
+Pode tentar combinações das proximos problema também. =)
 
 ########################################
 
-NÂO ESTOU TENDO VIDEO COM O NVIDIA-XRUN, MAS TENHO NORMALMETE SEM
+NVIDIA NVIDIA-XRUN NÃO FUNCIONA E TESTEI AS DUAS SOLUÇÔES DO TUTORIAL PARA /etc/X11/nvidia-xorg.conf
 
 1) Verifique se colocou os arquivos no local correto seguindo a wiki do Debian:
 
-https://wiki.debian.org/NvidiaGraphicsDrivers/NvidiaXrun
+https://wiki.debian.org/NvidiaGraphicsDrivers/NvidiaXrun e siga o tutorial de lá. =) 
 
 2) Verifique se seu BusID da placa de video está correto. No meu caso :
 
@@ -368,7 +402,7 @@ Informou que minha placa de video é dada por :
 Assim devo ter meu Device da nvidia configurado assim:
 
 Section "Device"
-  Identifier "nvidia"
+  Identifier "dGPU"
   Driver "nvidia"
   BusID "PCI:1:0:0"
 EndSection
@@ -378,7 +412,7 @@ Verifique se seu BusID está em decimal. Eventualmente, algumas maquinas tem Bus
 3c:00.0 VGA compatible controller: NVIDIA Corporation GP107M [GeForce GTX 1050 Ti Mobile] (rev a1). Esse bus ID com letras ou com dois digitos estão escritos em hexadecimal, então
 converta para decimal com o comando:
 
-bash -c "echo $(( 16#3c ))" e informou 60
+bash -c "echo $(( 16#3c ))" e informou 60. Substitua 3c por 60. =)
 
 3) Verifique se no arquivo /etc/default/nvidia-xrun CONTROLLER_BUS_ID e DEVICE_BUS_ID estão corretos. No meu caso,  
 
@@ -473,8 +507,9 @@ sudo apt-get reinstall gnome
 
 ABANAR DE MÂOS SOBRE WAYLAND
 
-Aqui vem um abanar de mãos... eu não testei o Wayland. Apesar das ultimas versões dos drivers da Nvidia estarem funcionando para Wayland, talvez vc sofra um bug. Tente baixar as versões 
-do driver da nvidia pelo repositório estavel que suponho que essa seja a solução (as vezes pessoal do Debian fizeram um patch para os drivers). Espero que tenha sucesso
+Aqui vem um abanar de mãos... eu não testei o Wayland. Apesar das ultimas versões dos drivers da Nvidia estarem funcionando para Wayland (KDE E GONE), talvez vc sofra um bug. 
+Tente baixar as versões do driver da nvidia pelo repositório estavel que suponho que essa seja a solução (as vezes pessoal do Debian fez um patch para os drivers). Espero que tenha sucesso
 e paginas do ArchWiki podem te ajudar. =) O Timeshift também te ajudará a reverter o caso. 
 
 
+########################################
