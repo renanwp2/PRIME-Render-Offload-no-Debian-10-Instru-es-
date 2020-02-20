@@ -1,10 +1,10 @@
 # PRIME-Render-Offload-no-Debian-10
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 Nesse video ensinarei como se fazer o uso conjunto do nvidia-xrun + PRIME Render Offload obtendo assim economia de energia e boa performance em jogos quando for necessário.
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 TENHA SEMPRE UM BACKUP
 
@@ -16,7 +16,7 @@ e instale o bleachbit para limpar modificações feitas do sistema durante o pro
 
 sudo apt-get install bleachbit
 
-##############################################################################################################################################################################
+################################################################################################################################
 
 BAIXE O NVIDIA-XRUN
 
@@ -24,7 +24,7 @@ Deve baixar o nvidia-xrun do site abaixo cliacando no botão verde "clone or dow
 
 https://github.com/Witko/nvidia-xrun
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 BAIXE OS DRIVERS DO SITE OFICIAL DA NVIDIA
 
@@ -52,7 +52,7 @@ sudo apt build-dep linux
 Se vc tiver um kernel prório, pode ser que sua instalação do driver não tenha sucesso. Nesse caso,
 recomendo que compile também os headers do seu kernel que o problema deve ser resolvido. =)
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 DEPENDENCIAS DO PRIME RENDER OFFLOAD DESENCONTRADAS NO DEBIAN STABLE 10
 
@@ -71,7 +71,7 @@ ii  xserver-xorg-input-wacom               0.34.99.1-1+b1                       
 ii  xserver-xorg-legacy                    2:1.20.7-3                               amd64        setuid root Xorg server wrapper
 ii  xserver-xorg-video-intel               2:2.99.917+git20190815-1                 amd64        X.Org X server -- Intel i8xx, i9xx display driver
 
-##############################################################################################################################################################################
+################################################################################################################################
 
 PROCESSO DE INSTAÇÂO SERÁ VIA TTY
 
@@ -79,7 +79,7 @@ Agora para garantir que iremos sempre trabalhar sem nenhuma interface grafica fa
 
 systemctl set-default multi-user.target && systemctl reboot
 
-##############################################################################################################################################################################
+################################################################################################################################
 
 BAIXANDO DEPENDÊNCIAS DO PRIME RENDER OFFLOAD
 
@@ -90,13 +90,13 @@ sudo cat 'deb http://deb.debian.org/debian/ sid main' >> /etc/apt/sources.list &
 Remova o xserver e seu display manager antigo fazendo 
 
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 INSTALANDO DEPENDENCIAS DO PRIME-RENDER OFFLOAD
 
 sudo apt install -y --no-install-recommends --no-install-suggests xserver-common xserver-xephyr xserver-xorg xserver-xorg-core xserver-xorg-dev xserver-xorg-input-all xserver-xorg-legacy > xorg-install
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 BAIXANDO OS DRIVERS CORRETOS PARA SUA PLACA INTEGRADA PARA UTILIZAÇÂO DIARIA
 
@@ -131,7 +131,7 @@ No meu caso informou que tenho uma Intel UHD Graphics 630 que é suportada pelo 
 
 sudo apt-get install xserver-xorg-video-intel.
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 POR PRECAUÇÃO NÂO DEIXE O NOUVEAU INICIAR
 
@@ -154,7 +154,7 @@ sudo bash ~/Downloads/NVIDIA-Linux-x86_64-440.58.01.run
 
 Vc deve dizer sim para tudo, exceto para a ultima opção que diz 'generate a new X configuration file' utilizando utulizando o nvdiia-xconfg, pois essa ultima pode fazer vc perder video numa proxima reinicialização do sistema.
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 CONFERINDO A INSTALAÇÂO
 
@@ -172,7 +172,7 @@ sudo cat /etc/X11/xorg.conf.d/*.conf >> /etc/X11/xorg.conf.
 
 Agora vc terá video em todas as reinicializações, mas ainda não tem a capacidade de controle sobre os drivers de video. Agora faremos nossa configuração manual.
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 COLOCANDO OS ARQUIVOS DO NVIDIA-RUN NO LUGAR APROPRIADO
 
@@ -201,7 +201,7 @@ Se vc baixou os drivers pelo reporítório, vai precisar seguir o tutorial:
 
 https://wiki.debian.org/NvidiaGraphicsDrivers/NvidiaXrun
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 IMPEÇA QUE DRIVERS DA PLACA DE VIDEO DA NVIDIA CARREGEM NO BOOT PARA EVITAR DESCONFORTOS NO USO DO NVIDIA-XRUN:
 
@@ -218,14 +218,14 @@ blacklist nvidia_drm
 blacklist nvidia_modeset
 blacklist nvidia_uvm.  
 
-##############################################################################################################################################################################
+#################################################################################################################################
 DESLIGANDO SUA PLACA DE VIDEO ATÉ QUE ATIVE O NVIDIA-XRUN NOVAMENTE:
 
 Agora inicie o serviço para ocultar sua placa de video do Kernel para ativar ultra economia de energia:
 
 systemctl enable nvidia-xrun-pm.
 
-##############################################################################################################################################################################
+#################################################################################################################################
 CONFIGURANDO O NVIDIA-XRUN PARA PRIME RENDER OFFLOAD NO LUGAR DE REVERSE PRIME
 
 Nesse momento temos reverse PRIME configurado. Vale a pena notar que reverse PRIME tem uma performance absurda com OpenGL! No entanto, devido ao Bug da nvidia com aplicações Vulkan 
@@ -259,15 +259,14 @@ Section "Device"
   Driver "nvidia"
 EndSection
 
-##############################################################################################################################################################################
-
+#################################################################################################################################
 VOLTANDO A SESSÂO GRAFICA
 
 Finalmente a instalação terminou e vc pode iniciar a interface grafica com sucesso:
 
 systemctl set-default graphical.target && sudo reboot
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 COMO EXECUTAR APLICAÇÔES GRAFICAS VIA NVIDIA_XRUN
 
@@ -282,7 +281,7 @@ Providers: number : 2
 Provider 0: id: 0x43 cap: 0xf, Source Output, Sink Output, Source Offload, Sink Offload crtcs: 3 outputs: 1 associated providers: 0 name:modesetting
 Provider 1: id: 0x248 cap: 0x0 crtcs: 0 outputs: 0 associated providers: 0 name:NVIDIA-G0
 
-##############################################################################################################################################################################
+#################################################################################################################################
 
 LIMPANDO CACHE DE ARQUIVOS DO APT-GET e RETIRANDO O REPOSITÓRIO SID DO SOURCES.LIST
 
@@ -298,8 +297,7 @@ e remova ou comente a linha
 
 deb http://deb.debian.org/debian/ sid main
 
-##############################################################################################################################################################################
-
+#################################################################################################################################
 
 ##############################################################################################################################################################################
 
@@ -384,10 +382,10 @@ bash -c "echo $(( 16#3c ))" e informou 60
 
 3) Verifique se no arquivo /etc/default/nvidia-xrun CONTROLLER_BUS_ID e DEVICE_BUS_ID estão corretos. No meu caso,  
 
-# Bus ID of the PCI express controller
+Bus ID of the PCI express controller
 CONTROLLER_BUS_ID=0000:00:01.0, pois meu PCI x16 é dado por 00:01.0 PCI bridge: Intel Corporation Skylake PCIe Controller (x16) (rev 07)
 
-# Bus ID of the graphic card 
+ Bus ID of the graphic card 
 DEVICE_BUS_ID=0000:01:00.0, pois minha paca de video dedidaca é dada por  01:00.0 VGA compatible controller: NVIDIA Corporation GP107M [GeForce GTX 1050 Ti Mobile] (rev a1). 
 
 Tente em hexadecimal e decimal.
@@ -478,5 +476,3 @@ ABANAR DE MÂOS SOBRE WAYLAND
 Aqui vem um abanar de mãos... eu não testei o Wayland. Apesar das ultimas versões dos drivers da Nvidia estarem funcionando para Wayland, talvez vc sofra um bug. Tente baixar as versões 
 do driver da nvidia pelo repositório estavel que suponho que essa seja a solução (as vezes pessoal do Debian fizeram um patch para os drivers). Espero que tenha sucesso
 e paginas do ArchWiki podem te ajudar. =) O Timeshift também te ajudará a reverter o caso. 
-
-
